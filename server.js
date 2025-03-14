@@ -28,9 +28,9 @@ io.on("connection", (socket) => {
     socket.on("register", async (email) => {
         try {
             await User.findOneAndUpdate({ email }, { socketId: socket.id }, { upsert: true });
-            console.log(`✅ User ${email} registered with socket ID: ${socket.id}`);
+            console.log(`User ${email} registered with socket ID: ${socket.id}`);
         } catch (error) {
-            console.error("❌ Error registering user:", error);
+            console.error("Error registering user:", error);
         }
     });
 
@@ -40,12 +40,12 @@ io.on("connection", (socket) => {
             const userToCall = await User.findOne({ email });
             if (userToCall?.socketId) {
                 io.to(userToCall.socketId).emit("callUser", { signal: signalData, from });
-                console.log(`📞 Call request sent from ${from} to ${email}`);
+                console.log(`Call request sent from ${from} to ${email}`);
             } else {
-                console.log(`⚠️ User ${email} not found or offline.`);
+                console.log(`User ${email} not found or offline.`);
             }
         } catch (error) {
-            console.error("❌ Error handling call request:", error);
+            console.error("Error handling call request:", error);
         }
     });
 
@@ -53,9 +53,9 @@ io.on("connection", (socket) => {
     socket.on("answerCall", async ({ signal, to }) => {
         try {
             io.to(to).emit("callAccepted", signal);
-            console.log(`✅ Call answered by ${to}`);
+            console.log(`Call answered by ${to}`);
         } catch (error) {
-            console.error("❌ Error handling call answer:", error);
+            console.error("Error handling call answer:", error);
         }
     });
 
@@ -63,9 +63,9 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", async ({ sender, text }) => {
         try {
             io.emit("receiveMessage", { sender, text });
-            console.log(`💬 Message from ${sender}: ${text}`);
+            console.log(`Message from ${sender}: ${text}`);
         } catch (error) {
-            console.error("❌ Error sending message:", error);
+            console.error("Error sending message:", error);
         }
     });
 
@@ -73,13 +73,13 @@ io.on("connection", (socket) => {
     socket.on("disconnect", async () => {
         try {
             await User.findOneAndUpdate({ socketId: socket.id }, { socketId: null });
-            console.log(`🔴 User disconnected: ${socket.id}`);
+            console.log(`User disconnected: ${socket.id}`);
         } catch (error) {
-            console.error("❌ Error handling user disconnection:", error);
+            console.error("Error handling user disconnection:", error);
         }
     });
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
