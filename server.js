@@ -62,7 +62,8 @@ io.on("connection", (socket) => {
     // Handle chat messages
     socket.on("sendMessage", async ({ sender, text }) => {
         try {
-            io.emit("receiveMessage", { sender, text });
+            io.to(socket.id).emit("receiveMessage", { sender, text }); // Send to sender
+            socket.broadcast.emit("receiveMessage", { sender, text }); // Send to others
             console.log(`Message from ${sender}: ${text}`);
         } catch (error) {
             console.error("Error sending message:", error);
@@ -82,4 +83,4 @@ io.on("connection", (socket) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
