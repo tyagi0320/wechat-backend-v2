@@ -15,7 +15,7 @@ app.use(express.json());
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "https://wechat-frontend-v2.vercel.app/",
+        origin: "https://wechat-frontend-v2.vercel.app",
         methods: ["GET", "POST"]
     }
 });
